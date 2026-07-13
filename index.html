@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkyRoute — Travel Weather Decision</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Styles -->
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-neutral">
+
+<!-- Weather particle effects render into this layer (rain / snow / sun / leaves) -->
+<div class="fx-layer" id="fxLayer"></div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow"><span class="dot"></span> Weather-Aware Route Planning</div>
+    <h1>Sky<span>Route</span></h1>
+    <p class="tagline">Tell us where you're headed and what the sky looks like — we'll work out the realistic distance and the smartest way to get there.</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- ================= FORM CARD ================= -->
+    <div class="card">
+      <h2><span class="num">01</span> Plan your trip</h2>
+
+      <label for="start">Starting Location</label>
+      <input type="text" id="start" placeholder="e.g. Dhanmondi, Dhaka">
+
+      <label for="dest">Destination Name</label>
+      <input type="text" id="dest" placeholder="e.g. Gulshan, or New York">
+
+      <label for="weather">Current Weather Condition</label>
+      <select id="weather">
+        <option value="neutral">🌤️ Neutral / Pleasant</option>
+        <option value="rainy">🌧️ Rainy</option>
+        <option value="sunny">☀️ Sunny / Too Hot</option>
+        <option value="cold">❄️ Cold</option>
+      </select>
+
+      <label>Available Transport (select any, or None)</label>
+      <div class="transport-grid" id="transportGrid">
+        <label class="chk"><input type="checkbox" value="Bike"> 🏍️ Bike</label>
+        <label class="chk"><input type="checkbox" value="Bicycle"> 🚲 Bicycle</label>
+        <label class="chk"><input type="checkbox" value="Car"> 🚗 Car</label>
+        <label class="chk"><input type="checkbox" value="Ride-Sharing"> 📱 Ride-Sharing</label>
+        <label class="chk"><input type="checkbox" value="Other Vehicle"> 🚐 Other Vehicle</label>
+        <label class="chk none-opt"><input type="checkbox" id="noneOpt" value="None"> 🚫 None</label>
+      </div>
+
+      <button class="btn" id="planBtn" type="button">Get Travel Decision →</button>
+      <p class="hint">Distance is estimated using a realistic local/domestic/international detection model — no live GPS or map data is used.</p>
+    </div>
+
+    <!-- ================= RESULT CARD ================= -->
+    <div class="card">
+      <h2><span class="num">02</span> Your travel decision</h2>
+
+      <div class="result-placeholder" id="placeholder">
+        <div class="glyph">🧭</div>
+        <div>Fill in your trip details and tap <b>Get Travel Decision</b> to see your route, distance, and recommended transport.</div>
+      </div>
+
+      <div class="result" id="result">
+        <div class="badge-row" id="badgeRow"></div>
+        <div class="distance-display">
+          <span class="num" id="distNum">0</span>
+          <span class="unit" id="distUnit">miles</span>
+        </div>
+        <div class="route-line" id="routeLine"></div>
+
+        <div class="rec-box">
+          <div class="label">Recommended transport</div>
+          <div class="value" id="recValue"></div>
+          <div class="sub" id="recSub"></div>
+        </div>
+
+        <div id="compareBlock"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= EMERGENCY ================= -->
+  <div class="card section-space">
+    <h2><span class="num">03</span> Emergency support</h2>
+
+    <div class="em-grid">
+      <div class="em-card">
+        <div class="country">Bangladesh 🇧🇩</div>
+        <div class="number">999</div>
+        <div class="svc">Police · Fire · Ambulance (National Emergency)</div>
+      </div>
+      <div class="em-card">
+        <div class="country">United States / Global 🌍</div>
+        <div class="number">911</div>
+        <div class="svc">Police · Fire · Medical</div>
+      </div>
+      <div class="em-card">
+        <div class="country">United Kingdom / EU 🇪🇺</div>
+        <div class="number">112</div>
+        <div class="svc">Universal European Emergency Number</div>
+      </div>
+      <div class="em-card">
+        <div class="country">Elsewhere</div>
+        <div class="number">112</div>
+        <div class="svc">Widely-recognized international fallback</div>
+      </div>
+    </div>
+
+    <!-- Personal emergency contact -->
+    <div class="personal-em">
+      <label for="emName">Personal Emergency Contact — Name</label>
+      <input type="text" id="emName" placeholder="e.g. Rahim Uddin">
+
+      <label for="emPhone">Personal Emergency Contact — Phone Number</label>
+      <input type="text" id="emPhone" placeholder="e.g. +880 1XXX-XXXXXX">
+
+      <button class="btn sos-btn" id="sosBtn" type="button">🆘 Send SOS Alert</button>
+      <p class="hint">Pressing SOS simulates an alert using your current trip details. No real call or SMS is sent by this demo.</p>
+    </div>
+  </div>
+
+  <footer>SKYROUTE · WEATHER-AWARE TRAVEL DECISIONS · ESTIMATES ARE ILLUSTRATIVE, NOT LIVE MAP DATA</footer>
+</div>
+
+<!-- ================= SOS MODAL ================= -->
+<div class="modal-overlay" id="sosModal">
+  <div class="modal-box" role="alertdialog" aria-live="assertive" aria-labelledby="sosTitle">
+    <div class="modal-icon">🚨</div>
+    <h3 id="sosTitle">Emergency Alert Sent</h3>
+    <p id="sosMessage">Emergency assistance requested for your trip from [Start] to [Destination]!</p>
+    <div class="modal-contact" id="sosContact"></div>
+    <button class="btn" id="sosClose" type="button">Close</button>
+  </div>
+</div>
+
+<!-- Script -->
+<script src="script.js"></script>
+</body>
+</html>
