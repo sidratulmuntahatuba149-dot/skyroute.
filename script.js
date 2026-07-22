@@ -43,15 +43,7 @@
 
   /* ------------------------------------------------------------------
      1. REFERENCE DATA
-  ------------------------------------------------------------------ */
-  const THEMES = ["theme-rainy", "theme-sunny", "theme-cold", "theme-neutral"];
-
-  // Recognized global (international) cities
-  const GLOBAL_CITIES = [
-    "new york", "london", "tokyo", "paris", "dubai", "singapore", "sydney",
-    "toronto", "mumbai", "delhi", "beijing", "moscow", "los angeles",
-    "san francisco", "chicago", "berlin", "rome", "madrid", "bangkok",
-    "kuala lumpur", "seoul", "hong kong", "cairo"
+  --"cairo"
   ];
 
   // Recognized Bangladeshi cities (domestic long-distance triggers)
